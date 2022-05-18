@@ -1,24 +1,13 @@
 *~
-*.class
 *.html
 .DS_Store
 package-list
 script.js
 stylesheet.css
 
-# Ignore Gradle project-specific cache directory
-.gradle
+**/bin
 
-# Ignore Gradle build output directory
-**/build
-**/certs
-**/target
-
-.classpath
 .project
 .settings
 .idea
 **/*.iml
-
-# jenv local settings
-.java-version

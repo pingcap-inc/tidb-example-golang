@@ -46,7 +46,7 @@ func main() {
 
 	// Create players with bulk inserts, insert 1919 players totally, and per batch for 114 players.
 
-	err = bulkInsertRandomPlayers(db, randomPlayers(1919))
+	err = bulkInsertRandomPlayers(db, randomPlayers(1919), 114)
 	if err != nil {
 		panic(err)
 	}

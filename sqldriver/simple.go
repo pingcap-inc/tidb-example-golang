@@ -44,10 +44,10 @@ func getPlayer(db *sql.DB, id string) (Player, error) {
 	}
 	defer rows.Close()
 
-	for rows.Next() {
+	if rows.Next() {
 		player := Player{}
 		scanErr := rows.Scan(&player.ID, &player.Coins, &player.Goods)
-		if scanErr != nil {
+		if scanErr == nil {
 			return player, nil
 		}
 	}
@@ -68,7 +68,7 @@ func getPlayerByLimit(db *sql.DB, limit int) ([]Player, error) {
 	for rows.Next() {
 		player := Player{}
 		scanErr := rows.Scan(&player.ID, &player.Coins, &player.Goods)
-		if scanErr != nil {
+		if scanErr == nil {
 			players = append(players, player)
 		}
 	}
@@ -99,7 +99,7 @@ func bulkInsertRandomPlayers(db *sql.DB, players []Player, batchSize int) error 
 	}
 
 	if len(players) != 0 {
-		if _, err := tx.Exec(buildBulkInsertSQL(len(players)), playerToArgs(players)); err != nil {
+		if _, err := tx.Exec(buildBulkInsertSQL(len(players)), playerToArgs(players)...); err != nil {
 			return err
 		}
 	}
@@ -121,8 +121,10 @@ func getCount(db *sql.DB) (int, error) {
 
 	defer rows.Close()
 
-	if err := rows.Scan(&count); err != nil {
-		return count, err
+	if rows.Next() {
+		if err := rows.Scan(&count); err != nil {
+			return count, err
+		}
 	}
 
 	return count, nil
@@ -153,6 +155,7 @@ func buyGoods(db *sql.DB, sellID, buyID string, amount, price int) error {
 				return err
 			}
 		}
+		sellRows.Close()
 
 		if sellPlayer.ID != sellID || sellPlayer.Goods < amount {
 			return fmt.Errorf("sell player %s goods not enough", sellID)
@@ -169,6 +172,7 @@ func buyGoods(db *sql.DB, sellID, buyID string, amount, price int) error {
 				return err
 			}
 		}
+		buyRows.Close()
 
 		if buyPlayer.ID != buyID || buyPlayer.Coins < price {
 			return fmt.Errorf("buy player %s coins not enough", buyID)

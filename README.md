@@ -4,8 +4,9 @@
 
 It's an example for Golang and TiDB. Contains subproject:
 
-- [gorm example](#gorm)
-- [go-sql-driver/mysql example](#plain-java-hibernate)
+- [gorm example](#gorm-example)
+- [go-sql-driver/mysql example](#go-sql-drivermysql-example)
+- [http example](#http-example)
 
 We use different frameworks or libraries to implement similar processes to reflect
 the solution for connecting to TiDB in different environments
@@ -75,3 +76,40 @@ go-sql-driver/mysql [expected output](./Expected-Output.md#sqldriver)
 - [Data Access Functions](./sqldriver/dao.go)
 - [SQL Strings](./sqldriver/sql.go)
 - [Main Entry](./sqldriver/sqldriver.go)
+
+## http example
+
+It's an example service used gorm to connect TiDB.
+Provide a group of HTTP Restful interface.
+
+### Running way
+
+1. Makefile(recommend)
+   1. First terminal
+       - Run `make http-example`
+   2. Second terminal
+       - Run `make request`
+   3. You can quit first terminal to stop service
+
+2. Manual
+    - Into `http`
+    - Run `go build -o bin/http`
+    - Run `./bin/http`
+    - Request:
+      - Option 1 (recommend):
+        - Input [Request Collection](./http/Player.postman_collection.json) to [Postman](https://www.postman.com/)
+        - Request by Postman application
+      - Option 2:
+        - Using [script](./http/request.sh) to request. It's based on `curl`
+      - Option 3:
+        - Request HTTP Restful interface by other way
+
+### Expected output
+
+1. request [expected output](./Expected-Output.md#http-request)
+2. service [expected output](./Expected-Output.md#http-service)
+
+### Code
+
+- [Main Entry](./http/http.go)
+- [Logic](./http/service.go)

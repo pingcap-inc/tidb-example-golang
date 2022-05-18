@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-.PHONY: gorm-example sql-driver-example http-example request
+.PHONY: all build run stop
 
-gorm-example:
-	$(MAKE) -C gorm
+all:
+	make build run
 
-sql-driver-example:
-	$(MAKE) -C sqldriver
+build:
+	go build -o bin/http
 
-http-example:
-	$(MAKE) -C http
+run:
+	./bin/http
 
 request:
-	$(MAKE) -C http request
+	./request.sh

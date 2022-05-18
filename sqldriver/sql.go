@@ -15,6 +15,10 @@
 package main
 
 const (
-	CreatePlayerSQL = "INSERT INTO player (id, coins, goods) VALUES (?, ?, ?)"
-	GetPlayerSQL    = "SELECT id, coins, goods FROM player WHERE id = ?"
+	CreatePlayerSQL      = "INSERT INTO player (id, coins, goods) VALUES (?, ?, ?)"
+	GetPlayerSQL         = "SELECT id, coins, goods FROM player WHERE id = ?"
+	GetCountSQL          = "SELECT count(*) FROM player"
+	GetPlayerWithLockSQL = GetPlayerSQL + " FOR UPDATE"
+	UpdatePlayerSQL      = "UPDATE player set goods = goods + ?, coins = coins + ? WHERE id = ?"
+	GetPlayerByLimitSQL  = "SELECT id, coins, goods FROM player LIMIT ?"
 )

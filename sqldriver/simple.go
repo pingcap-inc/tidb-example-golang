@@ -17,6 +17,9 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"github.com/google/uuid"
+	"math/rand"
+	"strings"
 )
 
 type Player struct {
@@ -31,27 +34,194 @@ func createPlayer(db *sql.DB, player Player) error {
 	return err
 }
 
-func getPlayer(db *sql.DB, id string) (*Player, error) {
-	player := Player{}
+// getPlayer get a player
+func getPlayer(db *sql.DB, id string) (Player, error) {
+	var player Player
 
 	rows, err := db.Query(GetPlayerSQL, id)
 	if err != nil {
-		return nil, err
+		return player, err
 	}
 	defer rows.Close()
 
-	if rows.Next() {
+	for rows.Next() {
+		player := Player{}
 		scanErr := rows.Scan(&player.ID, &player.Coins, &player.Goods)
 		if scanErr != nil {
-			return nil, scanErr
+			return player, nil
 		}
-
-		return &player, nil
 	}
 
-	return nil, fmt.Errorf("can not found player")
+	return player, fmt.Errorf("can not found player")
 }
 
-func bulkInsertRandomPlayers(db *sql.DB, total, batchSize int) error {
-	db.Begin()
+// getPlayerByLimit get players by limit
+func getPlayerByLimit(db *sql.DB, limit int) ([]Player, error) {
+	var players []Player
+
+	rows, err := db.Query(GetPlayerByLimitSQL, limit)
+	if err != nil {
+		return players, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		player := Player{}
+		scanErr := rows.Scan(&player.ID, &player.Coins, &player.Goods)
+		if scanErr != nil {
+			players = append(players, player)
+		}
+	}
+
+	return players, nil
+}
+
+// bulk-insert random players
+func bulkInsertRandomPlayers(db *sql.DB, players []Player, batchSize int) error {
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+
+	stmt, err := tx.Prepare(buildBulkInsertSQL(batchSize))
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	for len(players) > batchSize {
+		if _, err := stmt.Exec(playerToArgs(players[:batchSize])...); err != nil {
+			return err
+		}
+
+		players = players[batchSize:]
+	}
+
+	if len(players) != 0 {
+		if _, err := tx.Exec(buildBulkInsertSQL(len(players)), playerToArgs(players)); err != nil {
+			return err
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func getCount(db *sql.DB) (int, error) {
+	count := 0
+
+	rows, err := db.Query(GetCountSQL)
+	if err != nil {
+		return count, err
+	}
+
+	defer rows.Close()
+
+	if err := rows.Scan(&count); err != nil {
+		return count, err
+	}
+
+	return count, nil
+}
+
+func buyGoods(db *sql.DB, sellID, buyID string, amount, price int) error {
+	var sellPlayer, buyPlayer Player
+
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+
+	buyExec := func() error {
+		stmt, err := tx.Prepare(GetPlayerWithLockSQL)
+		if err != nil {
+			return err
+		}
+
+		sellRows, err := stmt.Query(sellID)
+		if err != nil {
+			return err
+		}
+		defer sellRows.Close()
+
+		if sellRows.Next() {
+			if err := sellRows.Scan(&sellPlayer.ID, &sellPlayer.Coins, &sellPlayer.Goods); err != nil {
+				return err
+			}
+		}
+
+		if sellPlayer.ID != sellID || sellPlayer.Goods < amount {
+			return fmt.Errorf("sell player %s goods not enough", sellID)
+		}
+
+		buyRows, err := stmt.Query(buyID)
+		if err != nil {
+			return err
+		}
+		defer buyRows.Close()
+
+		if buyRows.Next() {
+			if err := buyRows.Scan(&buyPlayer.ID, &buyPlayer.Coins, &buyPlayer.Goods); err != nil {
+				return err
+			}
+		}
+
+		if buyPlayer.ID != buyID || buyPlayer.Coins < price {
+			return fmt.Errorf("buy player %s coins not enough", buyID)
+		}
+
+		updateStmt, err := tx.Prepare(UpdatePlayerSQL)
+		if err != nil {
+			return err
+		}
+
+		if _, err := updateStmt.Exec(-amount, price, sellID); err != nil {
+			return err
+		}
+
+		if _, err := updateStmt.Exec(amount, -price, buyID); err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	err = buyExec()
+	if err == nil {
+		fmt.Println("\n[buyGoods]:\n    'trade success'")
+		tx.Commit()
+	} else {
+		tx.Rollback()
+	}
+
+	return err
+}
+
+func playerToArgs(players []Player) []interface{} {
+	var args []interface{}
+	for _, player := range players {
+		args = append(args, player.ID, player.Coins, player.Goods)
+	}
+	return args
+}
+
+func buildBulkInsertSQL(amount int) string {
+	return CreatePlayerSQL + strings.Repeat(",(?,?,?)", amount-1)
+}
+
+func randomPlayers(amount int) []Player {
+	players := make([]Player, amount, amount)
+	for i := 0; i < amount; i++ {
+		players[i] = Player{
+			ID:    uuid.New().String(),
+			Coins: rand.Intn(10000),
+			Goods: rand.Intn(10000),
+		}
+	}
+
+	return players
 }

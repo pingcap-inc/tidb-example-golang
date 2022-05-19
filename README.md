@@ -116,4 +116,5 @@ Provide a group of HTTP Restful interface.
 
 ## More Demo
 
-- [Transaction](./txn/)
+- [Transaction](./txn/README.md)
+- [Batch Delete/Update](./batch/README.md)

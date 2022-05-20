@@ -22,18 +22,19 @@ import (
 )
 
 func main() {
-	// 1. Configure the example database connection.
 	dsn := "root:@tcp(127.0.0.1:4000)/test?charset=utf8mb4"
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
+	openDB("mysql", dsn, func(db *sql.DB) {
+		// 2. Run some simple example.
+		simpleExample(db)
 
-	// 2. Run some simple example.
+		// 3. Getting further.
+		tradeExample(db)
+	})
+}
 
+func simpleExample(db *sql.DB) {
 	// Create a player, has a coin and a goods.
-	err = createPlayer(db, Player{ID: "test", Coins: 1, Goods: 1})
+	err := createPlayer(db, Player{ID: "test", Coins: 1, Goods: 1})
 	if err != nil {
 		panic(err)
 	}
@@ -67,9 +68,9 @@ func main() {
 	for index, player := range threePlayers {
 		fmt.Printf("print %d player: %+v\n", index+1, player)
 	}
+}
 
-	// 3. Getting further.
-
+func tradeExample(db *sql.DB) {
 	// Player 1: id is "1", has only 100 coins.
 	// Player 2: id is "2", has 114514 coins, and 20 goods.
 	player1 := Player{ID: "1", Coins: 100}
@@ -95,4 +96,14 @@ func main() {
 	if err := buyGoods(db, player2.ID, player1.ID, 2, 100); err != nil {
 		panic(err)
 	}
+}
+
+func openDB(driverName, dataSourceName string, runnable func(db *sql.DB)) {
+	db, err := sql.Open(driverName, dataSourceName)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	runnable(db)
 }

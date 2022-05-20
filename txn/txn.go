@@ -23,16 +23,13 @@ import (
 func main() {
 	optimistic, alice, bob := parseParams()
 
-	// 1. Configure the example database connection.
-	dsn := "root:@tcp(127.0.0.1:4000)/bookshop?charset=utf8mb4"
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
+	openDB("mysql", "root:@tcp(127.0.0.1:4000)/bookshop?charset=utf8mb4", func(db *sql.DB) {
+		prepareData(db, optimistic)
+		buy(db, optimistic, alice, bob)
+	})
+}
 
-	prepareData(db, optimistic)
-
+func buy(db *sql.DB, optimistic bool, alice, bob int) {
 	buyFunc := buyOptimistic
 	if !optimistic {
 		buyFunc = buyPessimistic
@@ -52,6 +49,16 @@ func main() {
 	}()
 
 	wg.Wait()
+}
+
+func openDB(driverName, dataSourceName string, runnable func(db *sql.DB)) {
+	db, err := sql.Open(driverName, dataSourceName)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	runnable(db)
 }
 
 func parseParams() (optimistic bool, alice, bob int) {

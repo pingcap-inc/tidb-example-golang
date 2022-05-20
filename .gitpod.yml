@@ -12,26 +12,6 @@ tasks:
   - name: TiUP init playground
     command: |
       $HOME/.tiup/bin/tiup playground
-  - name: Test Case
-    openMode: split-right
-    init: echo "*** Waiting for TiUP Playground Ready! ***"
-    command: |
-      gp await-port 3930
-      if [ "$targetMode" == "plain-java-jdbc" ]
-      then
-        cd plain-java-jdbc
-        code src/main/resources/dbinit.sql
-        code src/main/java/com/pingcap/JDBCExample.java
-        make mysql
-      elif [ "$targetMode" == "plain-java-hibernate" ]
-      then
-        cd plain-java-hibernate
-        make
-      elif [ "$targetMode" == "spring-jpa-hibernate" ]
-      then
-        cd spring-jpa-hibernate
-        make
-      fi
 
 ports:
   - port: 8080

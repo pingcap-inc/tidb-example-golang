@@ -79,8 +79,8 @@ func getPlayerByLimit(db *sql.DB, limit int) ([]Player, error) {
 	return players, nil
 }
 
-// bulk-insert random players
-func bulkInsertRandomPlayers(db *sql.DB, players []Player, batchSize int) error {
+// bulk-insert players
+func bulkInsertPlayers(db *sql.DB, players []Player, batchSize int) error {
 	tx, err := db.Begin()
 	if err != nil {
 		return err

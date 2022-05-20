@@ -17,9 +17,10 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/google/uuid"
 	"math/rand"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 type Player struct {

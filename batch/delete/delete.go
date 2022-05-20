@@ -30,18 +30,10 @@ func main() {
 	defer db.Close()
 
 	affectedRows := int64(-1)
+	startTime := time.Date(2022, 04, 15, 0, 0, 0, 0, time.UTC)
+	endTime := time.Date(2022, 04, 15, 0, 15, 0, 0, time.UTC)
+
 	for affectedRows != 0 {
-		layout := "2006-01-02 15:04:05"
-		startTime, err := time.Parse(layout, "2022-04-15 00:00:00")
-		if err != nil {
-			panic(err)
-		}
-
-		endTime, err := time.Parse(layout, "2022-04-15 00:15:00")
-		if err != nil {
-			panic(err)
-		}
-
 		affectedRows, err = deleteBatch(db, startTime, endTime)
 		if err != nil {
 			fmt.Println(err)

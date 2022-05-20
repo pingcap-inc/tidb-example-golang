@@ -18,8 +18,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"sync"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {

@@ -29,38 +29,38 @@ func main() {
 	}
 	defer db.Close()
 
-	for {
-		err = deleteBatch(db, "2022-04-15 00:00:00", "2022-04-15 00:15:00")
+	affectedRows := int64(-1)
+	for affectedRows != 0 {
+		layout := "2006-01-02 15:04:05"
+		startTime, err := time.Parse(layout, "2022-04-15 00:00:00")
+		if err != nil {
+			panic(err)
+		}
+
+		endTime, err := time.Parse(layout, "2022-04-15 00:15:00")
+		if err != nil {
+			panic(err)
+		}
+
+		affectedRows, err = deleteBatch(db, startTime, endTime)
 		if err != nil {
 			fmt.Println(err)
 		}
-		time.Sleep(time.Second)
 	}
 }
 
 // deleteBatch delete at most 1000 lines per batch
-func deleteBatch(db *sql.DB, sStartTime, sEndTime string) error {
-	layout := "2006-01-02 15:04:05"
-	startTime, err := time.Parse(layout, sStartTime)
-	if err != nil {
-		return err
-	}
-
-	endTime, err := time.Parse(layout, sEndTime)
-	if err != nil {
-		return err
-	}
-
+func deleteBatch(db *sql.DB, startTime, endTime time.Time) (int64, error) {
 	bulkUpdateSql := fmt.Sprintf("DELETE FROM `bookshop`.`ratings` WHERE `rated_at` >= ? AND  `rated_at` <= ? LIMIT 1000")
 	result, err := db.Exec(bulkUpdateSql, startTime, endTime)
 	if err != nil {
-		return err
+		return -1, err
 	}
 	affectedRows, err := result.RowsAffected()
 	if err != nil {
-		return err
+		return -1, err
 	}
 
 	fmt.Printf("delete %d data\n", affectedRows)
-	return nil
+	return affectedRows, nil
 }

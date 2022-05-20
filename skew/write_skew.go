@@ -108,7 +108,7 @@ func askForLeave(db *sql.DB, waitingChan chan bool, goroutineID, doctorID int) e
 	err = txnFunc()
 	if err == nil {
 		txn.Commit()
-		fmt.Println("[runTxn] looks good, commit")
+		fmt.Println("[runTxn] commit success")
 	} else {
 		txn.Rollback()
 		fmt.Printf("[runTxn] got an error, rollback: %+v\n", err)

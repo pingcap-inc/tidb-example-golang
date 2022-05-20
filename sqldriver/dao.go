@@ -45,10 +45,11 @@ func getPlayer(db *sql.DB, id string) (Player, error) {
 	defer rows.Close()
 
 	if rows.Next() {
-		player := Player{}
-		scanErr := rows.Scan(&player.ID, &player.Coins, &player.Goods)
-		if scanErr == nil {
+		err = rows.Scan(&player.ID, &player.Coins, &player.Goods)
+		if err == nil {
 			return player, nil
+		} else {
+			return player, err
 		}
 	}
 
@@ -67,9 +68,11 @@ func getPlayerByLimit(db *sql.DB, limit int) ([]Player, error) {
 
 	for rows.Next() {
 		player := Player{}
-		scanErr := rows.Scan(&player.ID, &player.Coins, &player.Goods)
-		if scanErr == nil {
+		err = rows.Scan(&player.ID, &player.Coins, &player.Goods)
+		if err == nil {
 			players = append(players, player)
+		} else {
+			return players, err
 		}
 	}
 
@@ -92,6 +95,7 @@ func bulkInsertRandomPlayers(db *sql.DB, players []Player, batchSize int) error 
 
 	for len(players) > batchSize {
 		if _, err := stmt.Exec(playerToArgs(players[:batchSize])...); err != nil {
+			tx.Rollback()
 			return err
 		}
 
@@ -100,11 +104,13 @@ func bulkInsertRandomPlayers(db *sql.DB, players []Player, batchSize int) error 
 
 	if len(players) != 0 {
 		if _, err := tx.Exec(buildBulkInsertSQL(len(players)), playerToArgs(players)...); err != nil {
+			tx.Rollback()
 			return err
 		}
 	}
 
 	if err := tx.Commit(); err != nil {
+		tx.Rollback()
 		return err
 	}
 
@@ -143,6 +149,7 @@ func buyGoods(db *sql.DB, sellID, buyID string, amount, price int) error {
 		if err != nil {
 			return err
 		}
+		defer stmt.Close()
 
 		sellRows, err := stmt.Query(sellID)
 		if err != nil {
@@ -182,6 +189,7 @@ func buyGoods(db *sql.DB, sellID, buyID string, amount, price int) error {
 		if err != nil {
 			return err
 		}
+		defer updateStmt.Close()
 
 		if _, err := updateStmt.Exec(-amount, price, sellID); err != nil {
 			return err

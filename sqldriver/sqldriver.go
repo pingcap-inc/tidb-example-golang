@@ -22,6 +22,7 @@ import (
 )
 
 func main() {
+	// 1. Configure the example database connection.
 	dsn := "root:@tcp(127.0.0.1:4000)/test?charset=utf8mb4"
 	openDB("mysql", dsn, func(db *sql.DB) {
 		// 2. Run some simple example.

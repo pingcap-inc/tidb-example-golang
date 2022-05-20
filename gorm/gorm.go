@@ -16,12 +16,14 @@ package main
 
 import (
     "fmt"
+    "math/rand"
+
     "github.com/google/uuid"
+
     "gorm.io/driver/mysql"
     "gorm.io/gorm"
     "gorm.io/gorm/clause"
     "gorm.io/gorm/logger"
-    "math/rand"
 )
 
 type Player struct {

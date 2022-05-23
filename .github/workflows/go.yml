@@ -1,4 +1,4 @@
-name: example
+name: example-golang-ci
 
 on:
   push:
@@ -11,16 +11,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    
-    - uses: actions/checkout@v3
-    
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: 1.18
-        
-    - name: Set up TiDB
-      run: curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
-      
-    - name: Test
-      run: make test
+
+      - uses: actions/checkout@v3
+      - uses: docker-practice/actions-setup-docker@master
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - name: Starter Docker Test
+        run: docker run -d -p 127.0.0.1:4000:4000 pingcap/tidb:v5.1.0
+
+      - name: Set MySQL Client
+        run: sudo apt install mysql-client -y
+
+      - name: Test
+        run: make test

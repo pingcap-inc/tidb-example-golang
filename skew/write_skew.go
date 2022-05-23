@@ -15,9 +15,9 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	"fmt"
+	"github.com/pingcap-inc/tidb-example-golang/util"
 	"sync"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -74,7 +74,7 @@ func askForLeave(db *sql.DB, waitingChan chan bool, goroutineID, doctorID int) e
 		txnComment = "\t" + txnComment
 	}
 
-	txn, err := db.BeginTx(context.Background(), nil)
+	txn, err := util.TiDBSqlBegin(db, true)
 	if err != nil {
 		return err
 	}

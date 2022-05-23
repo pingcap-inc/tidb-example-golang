@@ -27,4 +27,8 @@ request:
 	$(MAKE) -C http request
 
 test:
-	echo "start test"
+	$(MAKE) -C batch bulk-delete
+	$(MAKE) -C gorm all
+	$(MAKE) -C skew all
+	$(MAKE) -C sqldriver all
+	$(MAKE) -C txn all

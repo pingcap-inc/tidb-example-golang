@@ -17,6 +17,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"github.com/pingcap-inc/tidb-example-golang/util"
 	"math/rand"
 	"strings"
 
@@ -82,7 +83,7 @@ func getPlayerByLimit(db *sql.DB, limit int) ([]Player, error) {
 
 // bulk-insert players
 func bulkInsertPlayers(db *sql.DB, players []Player, batchSize int) error {
-	tx, err := db.Begin()
+	tx, err := util.TiDBSqlBegin(db, true)
 	if err != nil {
 		return err
 	}
@@ -140,7 +141,7 @@ func getCount(db *sql.DB) (int, error) {
 func buyGoods(db *sql.DB, sellID, buyID string, amount, price int) error {
 	var sellPlayer, buyPlayer Player
 
-	tx, err := db.Begin()
+	tx, err := util.TiDBSqlBegin(db, true)
 	if err != nil {
 		return err
 	}

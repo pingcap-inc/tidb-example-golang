@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/pingcap-inc/tidb-example-golang/util"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -67,7 +68,7 @@ func getCount() (int64, error) {
 }
 
 func buyGoods(sellID, buyID string, amount, price int) error {
-	return db.Transaction(func(tx *gorm.DB) error {
+	return util.TiDBGormBegin(db, true, func(tx *gorm.DB) error {
 		var sellPlayer, buyPlayer Player
 		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
 			Find(&sellPlayer, "id = ?", sellID).Error; err != nil {

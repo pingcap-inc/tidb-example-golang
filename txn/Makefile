@@ -36,7 +36,7 @@ pessimistic-oversell:
 	./bin/txn -a 4 -b 7
 
 optimistic-not-oversell:
-	./bin/txn -o true -a 4 -b 6
+	./bin/txn -a 4 -b 6 -o true
 
 optimistic-oversell:
-	./bin/txn -o true -a 4 -b 7
+	./bin/txn -a 4 -b 7 -o true

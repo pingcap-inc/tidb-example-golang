@@ -17,6 +17,7 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"fmt"
 	"sync"
 )
 
@@ -67,6 +68,8 @@ func parseParams() (optimistic bool, alice, bob int) {
 	flag.IntVar(&bob, "b", 6, "Bob bought num")
 
 	flag.Parse()
+
+	fmt.Println(optimistic, alice, bob)
 
 	return optimistic, alice, bob
 }

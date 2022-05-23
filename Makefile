@@ -25,3 +25,6 @@ http-example:
 
 request:
 	$(MAKE) -C http request
+
+test:
+	echo "start test"

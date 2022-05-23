@@ -32,3 +32,4 @@ test:
 	$(MAKE) -C skew all
 	$(MAKE) -C sqldriver all
 	$(MAKE) -C txn all
+	go test github.com/pingcap-inc/tidb-example-golang/util

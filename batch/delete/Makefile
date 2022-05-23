@@ -18,7 +18,7 @@ all:
 	make prepare build run
 
 prepare:
-	tiup demo bookshop prepare --drop-tables
+	~/.tiup/bin/tiup demo bookshop prepare --drop-tables
 
 build:
 	go build -o bin/batch-delete

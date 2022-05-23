@@ -18,7 +18,7 @@ all:
 	make prepare build run
 
 prepare:
-	tiup demo bookshop prepare --drop-tables
+	~/.tiup/bin/tiup demo bookshop prepare --drop-tables
 	mysql --host 127.0.0.1 --port 4000 -u root<add_attr_ten_point.sql
 
 build:

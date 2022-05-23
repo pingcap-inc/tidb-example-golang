@@ -21,10 +21,10 @@ optimistic:
 	make build prepare optimistic-not-oversell re-prepare optimistic-oversell
 
 prepare:
-	tiup demo bookshop prepare --drop-tables --books 0 --authors 0 --orders 0 --ratings 0 --users 0
+	~/.tiup/bin/tiup demo bookshop prepare --drop-tables --books 0 --authors 0 --orders 0 --ratings 0 --users 0
 
 re-prepare:
-	tiup demo bookshop prepare --drop-tables --books 0 --authors 0 --orders 0 --ratings 0 --users 0
+	~/.tiup/bin/tiup demo bookshop prepare --drop-tables --books 0 --authors 0 --orders 0 --ratings 0 --users 0
 
 build:
 	go build -o bin/txn

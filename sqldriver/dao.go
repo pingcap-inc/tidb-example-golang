@@ -17,11 +17,11 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/pingcap-inc/tidb-example-golang/util"
 	"math/rand"
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/pingcap-inc/tidb-example-golang/util"
 )
 
 type Player struct {

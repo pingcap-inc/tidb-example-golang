@@ -2,11 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {

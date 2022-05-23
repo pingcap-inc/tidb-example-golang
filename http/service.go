@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/google/uuid"
 	"github.com/pingcap-inc/tidb-example-golang/util"
+	
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"

@@ -16,10 +16,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/pingcap-inc/tidb-example-golang/util"
 	"math/rand"
 
 	"github.com/google/uuid"
+	"github.com/pingcap-inc/tidb-example-golang/util"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

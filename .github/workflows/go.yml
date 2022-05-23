@@ -1,0 +1,26 @@
+name: example
+
+on:
+  push:
+    branches: [ main, ci-test ]
+  pull_request:
+    branches: [ main, ci-test ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - uses: actions/checkout@v3
+    
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.18
+        
+    - name: Set up TiDB
+      run: curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
+      
+    - name: Test
+      run: make test

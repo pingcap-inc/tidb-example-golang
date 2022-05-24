@@ -36,7 +36,7 @@ func main() {
 	for affectedRows != 0 {
 		affectedRows, err = deleteBatch(db, startTime, endTime)
 		if err != nil {
-			fmt.Println(err)
+			panic(err)
 		}
 	}
 }

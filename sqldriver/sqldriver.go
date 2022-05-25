@@ -25,7 +25,7 @@ func main() {
 	// 1. Configure the example database connection.
 	dsn := "root:@tcp(127.0.0.1:4000)/test?charset=utf8mb4"
 	openDB("mysql", dsn, func(db *sql.DB) {
-		// 2. Run some simple example.
+		// 2. Run some simple examples.
 		simpleExample(db)
 
 		// 3. Getting further.
@@ -34,7 +34,7 @@ func main() {
 }
 
 func simpleExample(db *sql.DB) {
-	// Create a player, has a coin and a goods.
+	// Create a player, who has a coin and a goods.
 	err := createPlayer(db, Player{ID: "test", Coins: 1, Goods: 1})
 	if err != nil {
 		panic(err)
@@ -47,7 +47,7 @@ func simpleExample(db *sql.DB) {
 	}
 	fmt.Printf("getPlayer: %+v\n", testPlayer)
 
-	// Create players with bulk inserts, insert 1919 players totally, and per batch for 114 players.
+	// Create players with bulk inserts. Insert 1919 players totally, with 114 players per batch.
 
 	err = bulkInsertPlayers(db, randomPlayers(1919), 114)
 	if err != nil {
@@ -86,13 +86,13 @@ func tradeExample(db *sql.DB) {
 	}
 
 	// Player 1 wants to buy 10 goods from player 2.
-	// It will cost 500 coins, but player 1 can't afford it.
+	// It will cost 500 coins, but player 1 cannot afford it.
 	fmt.Println("\nbuyGoods:\n    => this trade will fail")
 	if err := buyGoods(db, player2.ID, player1.ID, 10, 500); err == nil {
 		panic("there shouldn't be success")
 	}
 
-	// So player 1 have to reduce his incoming quantity to two.
+	// So player 1 has to reduce the incoming quantity to two.
 	fmt.Println("\nbuyGoods:\n    => this trade will success")
 	if err := buyGoods(db, player2.ID, player1.ID, 2, 100); err != nil {
 		panic(err)

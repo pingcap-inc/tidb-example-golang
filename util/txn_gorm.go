@@ -18,7 +18,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// TiDBGormBegin start a TiDB and Gorm transaction as a block, return error will rollback, otherwise to commit.
+// TiDBGormBegin start a TiDB and Gorm transaction as a block. If no error is returned, the transaction will be committed. Otherwise, the transaction will be rolled back.
 func TiDBGormBegin(db *gorm.DB, pessimistic bool, fc func(tx *gorm.DB) error) (err error) {
 	session := db.Session(&gorm.Session{})
 	if session.Error != nil {

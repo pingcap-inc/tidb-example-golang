@@ -13,12 +13,12 @@
 # limitations under the License.
 
 
-.PHONY: all mysql build run
+.PHONY: all prepare build run
 
 all:
-	make mysql build run
+	make prepare build run
 
-mysql:
+prepare:
 	mycli --host 127.0.0.1 --port 4000 -u root --no-warn < sql/dbinit.sql
 
 build:

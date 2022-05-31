@@ -19,7 +19,7 @@ all:
 	make mysql build run
 
 mysql:
-	mysql --host 127.0.0.1 --port 4000 -u root<sql/dbinit.sql
+	mycli --host 127.0.0.1 --port 4000 -u root --no-warn < sql/dbinit.sql
 
 build:
 	go build -o bin/sql-driver-example

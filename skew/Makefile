@@ -12,10 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-.PHONY: all build run
+.PHONY: all prepare build run
 
 all:
-	make build run
+	make prepare build run
+
+prepare:
+	mycli --host 127.0.0.1 --port 4000 -u root -e "TRUNCATE test.doctors"
 
 build:
 	go build -o bin/write-skew

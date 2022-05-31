@@ -18,7 +18,7 @@ all:
 	make prepare build run
 
 prepare:
-	mycli --host 127.0.0.1 --port 4000 -u root -e "TRUNCATE test.doctors"
+	mycli --host 127.0.0.1 --port 4000 -u root -e "DROP TABLE IF EXISTS test.doctors"
 
 build:
 	go build -o bin/write-skew

@@ -23,8 +23,8 @@ jobs:
       - name: Starter Docker Test
         run: docker run -d -p 127.0.0.1:4000:4000 pingcap/tidb:v5.1.0
 
-      - name: Set MySQL Client
-        run: sudo apt install mysql-client -y
+      - name: Set mycli
+        run: sudo pip install pip -U -q && sudo pip install mycli -q
 
       - name: Add TiUP
         run: curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh

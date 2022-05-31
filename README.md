@@ -27,7 +27,7 @@ The process is as follows:
 ## Dependency
 
 - [Golang SDK](https://go.dev/)
-- mysql client
+- mycli
 
 ## gorm example
 

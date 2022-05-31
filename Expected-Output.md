@@ -85,14 +85,14 @@ buyGoods:
 ```
 /Library/Developer/CommandLineTools/usr/bin/make -C sqldriver
 make mysql build run
-mysql --host 127.0.0.1 --port 4000 -u root<sql/dbinit.sql
+mycli --host 127.0.0.1 --port 4000 -u root --no-warn < sql/dbinit.sql
 go build -o bin/sql-driver-example
 ./bin/sql-driver-example
 getPlayer: {ID:test Coins:1 Goods:1}
 countPlayers: 1920
 print 1 player: {ID:test Coins:1 Goods:1}
-print 2 player: {ID:011603d4-1b76-4871-95e5-cfc0e6a9872f Coins:8081 Goods:7887}
-print 3 player: {ID:52bbc281-81bd-46a6-8f3b-42138e052285 Coins:1847 Goods:4059}
+print 2 player: {ID:87f59982-d3ff-49eb-b720-c3a74fbab215 Coins:8081 Goods:7887}
+print 3 player: {ID:990817b2-074d-4f80-bd03-d28bfc7a35a0 Coins:1847 Goods:4059}
 
 buyGoods:
     => this trade will fail

@@ -31,5 +31,6 @@ test:
 	$(MAKE) -C gorm all
 	$(MAKE) -C skew all
 	$(MAKE) -C sqldriver all
-	$(MAKE) -C txn all
+	$(MAKE) -C txn pessimistic
+	$(MAKE) -C txn optimistic
 	go test github.com/pingcap-inc/tidb-example-golang/util
